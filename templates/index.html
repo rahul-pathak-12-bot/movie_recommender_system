@@ -1,0 +1,149 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Movie Recommender</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- HEADER -->
+    <header>
+        <h1>Movie<span>Recommender</span></h1>
+        <p>Discover movies similar to your favourites.</p>
+    </header>
+
+
+    <!-- SEARCH SECTION -->
+    <section class="search-section">
+
+        <h2>Find Similar Movies</h2>
+
+        <!-- SEARCH FORM -->
+        <form action="/" method="POST" class="search-form">
+
+            <input
+                type="text"
+                name="search"
+                placeholder="Search movie name..."
+                value="{{ search_query }}"
+            >
+
+            <button type="submit" name="action" value="search">
+                Search
+            </button>
+
+        </form>
+
+
+        <!-- SEARCH RESULTS -->
+        {% if searched %}
+
+        <div class="search-results">
+
+            <h3>
+                Search Results ({{ search_results|length }})
+            </h3>
+
+            {% if search_results %}
+
+            <div class="search-movie-list">
+
+                {% for movie in search_results %}
+
+                <div class="search-movie">
+                    {{ movie }}
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+            {% else %}
+
+                <p class="message">{{ message }}</p>
+
+            {% endif %}
+
+        </div>
+
+        {% endif %}
+
+
+        <p class="or-text">OR SELECT FROM THE MOVIE LIST</p>
+
+
+        <!-- MOVIE DROPDOWN FORM -->
+        <form action="/" method="POST" class="select-form">
+
+            <select name="movie" required>
+
+                <option value="" disabled
+                    {% if not selected_movie %}selected{% endif %}>
+                    Select a movie
+                </option>
+
+                {% for movie in all_movies %}
+
+                <option value="{{ movie }}"
+                    {% if selected_movie == movie %}selected{% endif %}>
+                    {{ movie }}
+                </option>
+
+                {% endfor %}
+
+            </select>
+
+            <button type="submit" name="action" value="recommend">
+                Recommend Movies
+            </button>
+
+        </form>
+
+        {% if message and not searched %}
+            <p class="message">{{ message }}</p>
+        {% endif %}
+
+    </section>
+
+
+    <!-- RECOMMENDATION RESULTS -->
+    {% if recommendations %}
+
+    <section class="results">
+
+        <h2>Movies Similar to {{ selected_movie }}</h2>
+
+        <div class="movie-grid">
+
+            {% for movie in recommendations %}
+
+            <div class="movie-card">
+
+                <span>{{ loop.index }}</span>
+
+                <h3>{{ movie }}</h3>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </section>
+
+    {% endif %}
+
+</div>
+
+</body>
+</html>
